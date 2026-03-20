@@ -1,0 +1,252 @@
+:root {
+  --bg: #c5e8c8;
+  --panel: rgba(255, 255, 255, 0.85);
+  --panel-2: rgba(255, 255, 255, 0.9);
+  --text: #1a2e1b;
+  --muted: #3d5c3f;
+  --border: rgba(0, 0, 0, 0.12);
+  --primary: #2e7d32;
+  --primary-2: #43a047;
+  --danger: #c62828;
+  --shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: min(1080px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.appShell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.75);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbarInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease,
+    background 120ms ease;
+}
+
+.btn:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btnPrimary {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.btnPrimary:hover {
+  background: var(--primary-2);
+  border-color: var(--primary-2);
+}
+
+.btnDanger {
+  border-color: var(--danger);
+  background: rgba(198, 40, 40, 0.15);
+  color: var(--danger);
+}
+
+.main {
+  flex: 1;
+  padding: 28px 0 44px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 920px) {
+  .grid2 {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.panelTitle {
+  margin: 0 0 12px;
+  font-size: 18px;
+  letter-spacing: 0.2px;
+}
+
+.helper {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  padding: 10px 12px;
+  outline: none;
+}
+
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--primary);
+}
+
+.errorBox,
+.successBox,
+.infoBox {
+  border-radius: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.errorBox {
+  border-color: var(--danger);
+  background: rgba(198, 40, 40, 0.12);
+  color: #b71c1c;
+}
+
+.successBox {
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.12);
+  color: #1b5e20;
+}
+
+.infoBox {
+  border-color: #1565c0;
+  background: rgba(21, 101, 192, 0.1);
+  color: #0d47a1;
+}
+
+.hr {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
