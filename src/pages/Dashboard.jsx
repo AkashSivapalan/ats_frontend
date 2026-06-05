@@ -13,6 +13,25 @@ function getAnalyzeErrorMessage(err) {
     }
     return "You've reached the daily analysis limit. Try again tomorrow."
   }
+  // If the backend reports no resume found, show a clear instruction
+  if (err instanceof ApiError && err.status === 404) {
+    try {
+      const body = err.bodyText ? JSON.parse(err.bodyText) : null
+      if (body?.detail && /no resume found/i.test(body.detail)) {
+        return 'Upload a resume to compare against'
+      }
+      if (body?.detail) return body.detail
+    } catch {
+      // ignore
+    }
+    return 'Upload a resume to compare against'
+  }
+
+  // Return a generic message for server-side failures so users don't see raw API errors
+  if (err instanceof ApiError && err.status >= 500 && err.status < 600) {
+    return 'Service unavailable at the moment. Try again later.'
+  }
+
   return err instanceof Error ? err.message : 'Analyze failed.'
 }
 
@@ -42,17 +61,35 @@ export function DashboardPage() {
 
     setUploading(true)
     try {
-      const fd = new FormData()
-      fd.append('file', resumeFile)
-
-      await apiFetch('/resumes', {
+      // Step 1: Request presigned URL from backend
+      const { uploadUrl, s3Key } = await apiFetch('/resumes/upload-url', {
         method: 'POST',
-        body: fd,
-        isJson: false,
+        body: { filename: resumeFile.name, contentType: resumeFile.type },
+        isJson: true,
+        authToken: auth.token,
+      })
+
+      // Step 2: PUT file directly to S3
+      const s3Response = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': resumeFile.type },
+        body: resumeFile,
+      })
+
+      if (!s3Response.ok) {
+        throw new Error(`S3 upload failed (${s3Response.status})`)
+      }
+
+      // Step 3: Confirm upload with backend
+      await apiFetch('/resumes/confirm', {
+        method: 'POST',
+        body: { s3Key, filename: resumeFile.name, contentType: resumeFile.type },
+        isJson: true,
         authToken: auth.token,
       })
 
       setUploadMsg('Resume uploaded successfully.')
+      setResumeFile(null)
     } catch (err) {
       setUploadErr(err instanceof Error ? err.message : 'Resume upload failed.')
     } finally {

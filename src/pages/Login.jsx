@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { apiFetch } from '../api/client.js'
+import { apiFetch, ApiError } from '../api/client.js'
 import { useAuth } from '../auth/useAuth.js'
 
 export function LoginPage() {
@@ -29,7 +29,23 @@ export function LoginPage() {
       auth.login(res.token)
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed.')
+      // Map backend 400 invalid-login response to a friendly message
+      if (err instanceof ApiError && err.status === 400) {
+        try {
+          const body = err.bodyText ? JSON.parse(err.bodyText) : null
+          if (body?.detail && /invalid login credentials/i.test(body.detail)) {
+            setError('Invalid user credentials.')
+          } else if (body?.detail) {
+            setError(body.detail)
+          } else {
+            setError('Invalid user credentials.')
+          }
+        } catch {
+          setError('Invalid user credentials.')
+        }
+      } else {
+        setError(err instanceof Error ? err.message : 'Login failed.')
+      }
     } finally {
       setSubmitting(false)
     }
